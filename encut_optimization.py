@@ -99,18 +99,11 @@ def make_graph():
 def main():
     parser = argparse.ArgumentParser(
         description='Calculate encut optimization')
-    parser.add_argument('min_encut',
-                        type=int,
-                        nargs='+',
-                        help='minimum value of encut')
-    parser.add_argument('max_encut',
-                        type=int,
-                        nargs='+',
-                        help='maximum value of encut')
+    parser.add_argument('min_encut', type=int, help='minimum value of encut')
+    parser.add_argument('max_encut', type=int, help='maximum value of encut')
     parser.add_argument(
         'step',
         type=int,
-        nargs='+',
         help='step of variation between minimum and maximum encut')
     parser.add_argument('--graph',
                         type=bool,
@@ -118,6 +111,7 @@ def main():
                         help='make the optimization graph')
 
     args = parser.parse_args()
+
     optimization(args.min_encut, args.max_encut, args.step, args.graph)
 
 
