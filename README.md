@@ -24,6 +24,7 @@ python3 setup.py develop
 ```
 
 ## About CLI
+```bash
 usage: encut_optimization [-h] [--graph GRAPH]
                           min_encut [min_encut ...] max_encut [max_encut ...]
                           step [step ...]
@@ -38,3 +39,4 @@ positional arguments:
 optional arguments:
   -h, --help     show this help message and exit
   --graph GRAPH  make the optimization graph
+```
