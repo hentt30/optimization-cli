@@ -1,8 +1,0 @@
-README.md
-encut_optimization.py
-setup.py
-encut_opt.egg-info/PKG-INFO
-encut_opt.egg-info/SOURCES.txt
-encut_opt.egg-info/dependency_links.txt
-encut_opt.egg-info/entry_points.txt
-encut_opt.egg-info/top_level.txt
