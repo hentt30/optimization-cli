@@ -38,5 +38,5 @@ positional arguments:
 
 optional arguments:
   -h, --help     show this help message and exit
-  --graph GRAPH  make the optimization graph
+  --graph GRAPH  plot the optimization graph
 ```

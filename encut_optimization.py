@@ -108,7 +108,7 @@ def main():
     parser.add_argument('--graph',
                         type=bool,
                         default=False,
-                        help='make the optimization graph')
+                        help='plot the optimization graph')
 
     args = parser.parse_args()
 
