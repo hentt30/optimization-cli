@@ -1,1 +1,1 @@
-# optimization-cli
+# encut optimization cli
