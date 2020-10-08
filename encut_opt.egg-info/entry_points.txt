@@ -1,0 +1,4 @@
+
+        [console_scripts]
+        encut_optimization=encut_optimization:main
+    

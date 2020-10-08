@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import argparse
 import re
 import os
@@ -95,7 +96,7 @@ def make_graph():
     plot.savefig("output.eps")
 
 
-if __name__ == '__main__':
+def main():
     parser = argparse.ArgumentParser(
         description='Calculate encut optimization')
     parser.add_argument('min_encut',
@@ -118,3 +119,7 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
     optimization(args.min_encut, args.max_encut, args.step, args.graph)
+
+
+if __name__ == '__main__':
+    main()
