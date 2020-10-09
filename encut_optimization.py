@@ -5,7 +5,7 @@ import os
 import subprocess
 import pandas as pd
 import seaborn as sns
-
+from tqdm import tqdm
 
 def optimization(min_encut: int, max_encut: int, step: int, graph: bool):
     validate_params(min_encut, max_encut, step)
@@ -43,7 +43,7 @@ def generate_encuts(min_encut: int, max_encut: int, step: int) -> list:
 def run_process(permited_encuts: list) -> None:
     results_df = pd.DataFrame()
 
-    for encut in permited_encuts:
+    for encut in tqdm(permited_encuts):
 
         modify_incar_file(encut)
         run_vasp()
@@ -81,7 +81,7 @@ def run_vasp() -> None:
 
 
 def parse_results(encut: int) -> dict:
-    line = subprocess.check_output(['tail', '-1', 'OSZICAR'])
+    line = str(subprocess.check_output(['tail', '-1', 'OSZICAR']))
     regex = re.compile(r'([+-]\d?(\.\d+)[Ee][+-]\d+)+')
     results = re.findall(regex, line)
     final_results = [i[0] for i in results]
@@ -95,7 +95,7 @@ def parse_results(encut: int) -> dict:
 
 def make_graph():
     df = pd.read_csv('./test_encut_results.csv')
-    plot = sns.scatterplot(data=df, x="encut", y="F")
+    plot = sns.scatterplot(data=df, x="Encut (eV)", y="Energy (eV)")
     fig = plot.get_figure()
     fig.savefig('output.eps')
 
