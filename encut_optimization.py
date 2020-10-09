@@ -4,7 +4,7 @@ import re
 import os
 import subprocess
 import pandas as pd
-import seaborn
+import seaborn as sns
 
 
 def optimization(min_encut: int, max_encut: int, step: int, graph: bool):
@@ -48,13 +48,13 @@ def run_process(permited_encuts: list) -> None:
         modify_incar_file(encut)
         run_vasp()
         parsed_results = parse_results(encut)
-        results_df.append(parse_results, ignore_index=True)
+        results_df = results_df.append(parsed_results, ignore_index=True)
 
     results_df.to_csv('./test_encut_results.csv')
 
 
 def modify_incar_file(encut: int) -> None:
-    with open('INCAR', 'rw+') as file:
+    with open('INCAR', 'rt+') as file:
         content = file.read()
         new_content = re.sub('ENCUT\s*=\s*-?\s*([0-9]+)?',
                              r'ENCUT={}'.format(encut),
@@ -68,6 +68,8 @@ def modify_incar_file(encut: int) -> None:
 
 
 def run_vasp() -> None:
+    if (os.path.isfile('WAVECAR')):
+        os.remove('WAVECAR')
 
     process = subprocess.Popen(['mpirun', 'vasp541-05FEB16'],
                                stdout=subprocess.PIPE,
@@ -80,20 +82,22 @@ def run_vasp() -> None:
 
 def parse_results(encut: int) -> dict:
     line = subprocess.check_output(['tail', '-1', 'OSZICAR'])
-    results = re.findall(r'[+-]?\d?(\.\d+)[Ee][+-]?\d+', line)
-
+    regex = re.compile(r'([+-]\d?(\.\d+)[Ee][+-]\d+)+')
+    results = re.findall(regex, line)
+    final_results = [i[0] for i in results]
     return {
-        'encut': encut,
-        'F': results[0],
-        'E0': results[1],
-        'dE': results[2]
+        'Encut (eV)': encut,
+        'Energy (eV)': final_results[0],
+        'E0': final_results[1],
+        'dE': final_results[2]
     }
 
 
 def make_graph():
     df = pd.read_csv('./test_encut_results.csv')
-    plot = sns.scatterplot(data=df, x="Encut (eV)", y="Energy (eV)")
-    plot.savefig("output.eps")
+    plot = sns.scatterplot(data=df, x="encut", y="F")
+    fig = plot.get_figure()
+    fig.savefig('output.eps')
 
 
 def main():
@@ -105,10 +109,10 @@ def main():
         'step',
         type=int,
         help='step of variation between minimum and maximum encut')
-    parser.add_argument('--graph',
-                        type=bool,
-                        default=False,
-                        help='plot the optimization graph')
+    parser.add_argument('-g',
+                        '--graph',
+                        action='store_true',
+                        help='plot the optimization graph - Optional argument')
 
     args = parser.parse_args()
 
