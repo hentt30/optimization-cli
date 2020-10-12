@@ -25,16 +25,20 @@ python3 setup.py develop
 
 ## About CLI
 ```bash
-usage: encut_optimization.py [-h] [-g] min_encut max_encut step
+usage: optimization.py [-h] [-np NUMBER_CORES] [-g]
+                       {encut,lattice_constant} min_value max_value step
 
 Calculate encut optimization
 
 positional arguments:
-  min_encut    minimum value of encut
-  max_encut    maximum value of encut
-  step         step of variation between minimum and maximum encut
+  {encut,lattice_constant}
+  min_value             minimum value of optimization parameter
+  max_value             maximum optimization parameter
+  step                  step of variation between minimum and maximum
 
 optional arguments:
-  -h, --help   show this help message and exit
-  -g, --graph  plot the optimization graph - Optional argument
+  -h, --help            show this help message and exit
+  -np NUMBER_CORES, --number_cores NUMBER_CORES
+                        plot the optimization graph - Optional argument
+  -g, --graph           plot the optimization graph - Optional argument
 ```
