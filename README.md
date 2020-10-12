@@ -43,5 +43,5 @@ optional arguments:
                         plot the optimization graph - Optional argument
   -g, --graph           plot the optimization graph - Optional argument
   -td, --two_dimensions
-                        Adjust kpoints to two dimentional materials
+                        Adjust kpoints for two dimentional materials
 ```
