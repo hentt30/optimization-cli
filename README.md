@@ -1,4 +1,4 @@
-# encut optimization cli
+# Optimization cli
 
 ## Install dependencies
 
