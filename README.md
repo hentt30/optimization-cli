@@ -25,13 +25,14 @@ python3 setup.py develop
 
 ## About CLI
 ```bash
-usage: optimization.py [-h] [-np NUMBER_CORES] [-g]
-                       {encut,lattice_constant} min_value max_value step
+usage: optimization.py [-h] [-np NUMBER_CORES] [-g] [-td]
+                       {encut,lattice_constant,kpoint} min_value max_value
+                       step
 
 Calculate encut optimization
 
 positional arguments:
-  {encut,lattice_constant}
+  {encut,lattice_constant,kpoint}
   min_value             minimum value of optimization parameter
   max_value             maximum optimization parameter
   step                  step of variation between minimum and maximum
@@ -41,4 +42,6 @@ optional arguments:
   -np NUMBER_CORES, --number_cores NUMBER_CORES
                         plot the optimization graph - Optional argument
   -g, --graph           plot the optimization graph - Optional argument
+  -td, --two_dimensions
+                        Adjust kpoints to two dimentional materials
 ```

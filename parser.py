@@ -7,7 +7,8 @@ class Parser:
 
     def add_arguments(self):
         self.parser.add_argument('action',
-                                 choices=('encut', 'lattice_constant'))
+                                 choices=('encut', 'lattice_constant',
+                                          'kpoint'))
 
         self.parser.add_argument(
             'min_value', help='minimum value of optimization parameter')
@@ -28,6 +29,11 @@ class Parser:
             '--graph',
             action='store_true',
             help='plot the optimization graph - Optional argument')
+        self.parser.add_argument(
+            '-td',
+            '--two_dimensions',
+            action='store_true',
+            help='Adjust kpoints to two dimentional materials')
 
     def parse_args(self):
         return self.parser.parse_args()

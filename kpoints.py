@@ -7,58 +7,56 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 
-class LatticeConstatOptimization:
+class KpointsOptimization:
     def __init__(self, args):
-        self.min_param = float(args.min_value)
-        self.max_param = float(args.max_value)
-        self.step = float(args.step)
+        self.min_kpoint = int(args.min_value)
+        self.max_kpoint = int(args.max_value)
+        self.step = int(args.step)
+        self.is_2d = args.two_dimensions
         self.number_cores = args.number_cores
         self.need_graph = args.graph
         self.validate_params()
-        self.permited_params = self.generate_params()
+        self.permited_kpoints = self.generate_kpoints()
         self.optimization_results = pd.DataFrame()
 
     def validate_params(self):
-        if (self.max_param <= self.min_param):
+        if (self.max_kpoint <= self.min_kpoint):
             raise Exception('Minimum encut is greater than maximum encut')
         if (self.step <= 0):
             raise Exception('Step is less or equal than zero')
 
-    def isclose(self, a, b, rel_tol=1e-09, abs_tol=0.0):
-        return abs(a - b) <= max(rel_tol * max(abs(a), abs(b)), abs_tol)
+    def generate_kpoints(self):
 
-    def generate_params(self):
+        kpoints = []
 
-        params = []
+        initial_kpoint = self.min_kpoint
 
-        initial_param = self.min_param
+        while (initial_kpoint <= self.max_kpoint):
+            kpoints.append(initial_kpoint)
+            initial_kpoint += self.step
 
-        while (initial_param <= self.max_param):
-            params.append(initial_param)
-            initial_param += self.step
+        if (self.max_kpoint != kpoints[-1]):
+            kpoints.append(self.max_kpoint)
 
-        if (not self.isclose(self.max_param, params[-1])):
-            params.append(self.max_param)
-
-        return params
+        return kpoints
 
     def run(self):
 
-        for param in tqdm(self.permited_params):
+        for kpoint in tqdm(self.permited_kpoints):
 
-            self.modify_poscar_file(param)
+            self.modify_kpoint_file(kpoint)
             self.run_vasp(self.number_cores)
-            parsed_results = self.parse_results(param)
+            parsed_results = self.parse_results(kpoint)
             self.optimization_results = self.optimization_results.append(
                 parsed_results, ignore_index=True)
 
-        self.optimization_results.to_csv('./test_param_results.csv')
+        self.optimization_results.to_csv('./test_kpoints_results.csv')
 
         if (self.need_graph):
             self.make_graph()
 
-    def modify_poscar_file(self, param: int) -> None:
-        with open('POSCAR', 'rt+') as file:
+    def modify_kpoint_file(self, kpoint: int) -> None:
+        with open('KPOINT', 'rt+') as file:
             content = file.read()
             chunks = re.split(r"\n\s*\n", content.rstrip(), flags=re.MULTILINE)
             try:
@@ -66,11 +64,16 @@ class LatticeConstatOptimization:
                     chunks.pop(0)
                     chunks[0] = "\n" + chunks[0]
             except IndexError:
-                raise ValueError("Empty POSCAR")
+                raise ValueError("Empty KPOINT")
 
             # Parse positions
             lines = list(self.clean_lines(chunks[0].split("\n"), False))
-            lines[1] = str(param)
+            if (self.is_2d):
+                lines[3] = '{} {} 1'.format(kpoint, kpoint)
+
+            else:
+                lines[3] = '{} {} {}'.format(kpoint, kpoint, kpoint)
+
             new_content = '\n'.join(lines)
             # absolute file positioning
             file.seek(0)
@@ -108,13 +111,13 @@ class LatticeConstatOptimization:
         if (stderr):
             raise Exception('VASP raise an error')
 
-    def parse_results(self, param: int):
+    def parse_results(self, kpoint: int):
         line = str(subprocess.check_output(['tail', '-1', 'OSZICAR']))
         regex = re.compile(r'([+-]\d?(\.\d+)[Ee][+-]\d+)+')
         results = re.findall(regex, line)
         final_results = [i[0] for i in results]
         return {
-            'Param (A)': param,
+            'Kpoint': kpoint,
             'Total energy (eV/cell)': final_results[0],
             'E0': final_results[1],
             'dE': final_results[2]
@@ -123,6 +126,6 @@ class LatticeConstatOptimization:
     def make_graph(self):
         fig = plt.figure(num=1, figsize=(20, 20), dpi=80)
         sns.scatterplot(data=self.optimization_results,
-                        x="Param (A)",
+                        x="Kpoint",
                         y="Total energy (eV/cell)")
         plt.show()
