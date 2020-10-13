@@ -30,7 +30,7 @@ python3 setup.py develop
 
 ## About CLI
 ```bash
-usage: optimization.py [-h] [-np NUMBER_CORES] [-g] [-td]
+usage: optimization [-h] [-np NUMBER_CORES] [-g] [-td]
                        {encut,lattice_constant,kpoint} min_value max_value
                        step
 
