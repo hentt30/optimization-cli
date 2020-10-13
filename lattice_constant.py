@@ -3,7 +3,6 @@ from tqdm import tqdm
 import re
 import os
 import subprocess
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -115,14 +114,14 @@ class LatticeConstatOptimization:
         final_results = [i[0] for i in results]
         return {
             'Param (A)': param,
-            'Total energy (eV/cell)': final_results[0],
-            'E0': final_results[1],
-            'dE': final_results[2]
+            'Total energy (eV/cell)': float(final_results[0]),
+            'E0': float(final_results[1]),
+            'dE': float(final_results[2])
         }
 
     def make_graph(self):
-        fig = plt.figure(num=1, figsize=(20, 20), dpi=80)
-        sns.scatterplot(data=self.optimization_results,
-                        x="Param (A)",
-                        y="Total energy (eV/cell)")
-        plt.show()
+        self.optimization_results.plot(kind='scatter',
+                                       x='Param (A)',
+                                       y='Total energy (eV/cell)',
+                                       color='blue')
+        plt.savefig('output.png')

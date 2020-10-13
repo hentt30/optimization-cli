@@ -3,7 +3,6 @@ from tqdm import tqdm
 import re
 import os
 import subprocess
-import seaborn as sns
 import matplotlib.pyplot as plt
 
 
@@ -56,7 +55,7 @@ class KpointsOptimization:
             self.make_graph()
 
     def modify_kpoint_file(self, kpoint: int) -> None:
-        with open('KPOINT', 'rt+') as file:
+        with open('KPOINTS', 'rt+') as file:
             content = file.read()
             chunks = re.split(r"\n\s*\n", content.rstrip(), flags=re.MULTILINE)
             try:
@@ -118,14 +117,14 @@ class KpointsOptimization:
         final_results = [i[0] for i in results]
         return {
             'Kpoint': kpoint,
-            'Total energy (eV/cell)': final_results[0],
-            'E0': final_results[1],
-            'dE': final_results[2]
+            'Total energy (eV/cell)': float(final_results[0]),
+            'E0': float(final_results[1]),
+            'dE': float(final_results[2])
         }
 
     def make_graph(self):
-        fig = plt.figure(num=1, figsize=(20, 20), dpi=80)
-        sns.scatterplot(data=self.optimization_results,
-                        x="Kpoint",
-                        y="Total energy (eV/cell)")
-        plt.show()
+        self.optimization_results.plot(kind='scatter',
+                                       x='Kpoint',
+                                       y='Total energy (eV/cell)',
+                                       color='blue')
+        plt.savefig('output.png')
