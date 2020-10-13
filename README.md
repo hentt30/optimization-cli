@@ -16,6 +16,11 @@ source ./opt-env/bin/activate
 ``` bash
 python3 setup.py install
 ```
+Or
+
+``` bash
+sudo python3 setup.py install
+```
 
 ## Define entry points
 
