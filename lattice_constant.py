@@ -73,8 +73,8 @@ class LatticeConstatOptimization:
             lines[1] = str(param)
             if self.is_2d:
                 v3= lines[4].split()
-                a3,b3=v3[0],v3[1]
-                lines[4]=f"{a3:.2f}\t{b3:.2f}\t{(20.0/param):.2f}"
+                a3,b3=float(v3[0]),float(v3[1])
+                lines[4]=f"{a3:.2f}\t{b3:.2f}\t{(20.0/float(param)):.2f}"
             new_content = '\n'.join(lines)
             # absolute file positioning
             file.seek(0)
