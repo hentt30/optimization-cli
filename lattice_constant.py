@@ -114,7 +114,7 @@ class LatticeConstatOptimization:
 
     def parse_results(self, param: int):
         line = str(subprocess.check_output(['tail', '-1', 'OSZICAR']))
-        regex = re.compile(r'([+-]?\d?(\.\d+)[Ee][+-]\d+)+')
+        regex = re.compile(r'([+-]?\d?(\.\d+)[Ee]?[+-]\d+)+')
         results = re.findall(regex, line)
         final_results = [i[0] for i in results]
         return {
